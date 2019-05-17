@@ -15,7 +15,7 @@ public class Runner {
 	public static void main(String[] args) {
 
 		//Create the Bloom Filter.
-		BloomFilter bloomFilter = contructBloomFilter(args[0]);
+		BloomFilter bloomFilter = contructBloomFilter(args[0]); 
 				
 		//Create the Hash Table.
 		HashTable hashTable = contructHashTable(args[1]);
