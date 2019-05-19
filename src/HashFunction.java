@@ -10,7 +10,7 @@ public class HashFunction {
 		this.b=b;
 	}
 	
-	public int getIndex(int key,int m) {
+	public int hashFunction(int key,int m) {
 		return ((a*key+b)%p)%m;
 	}
 }
