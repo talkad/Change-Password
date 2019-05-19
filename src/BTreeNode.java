@@ -61,4 +61,17 @@ public class BTreeNode {
 	public void setChild(BTreeNode child[]) {
 		this.child = child;
 	}
+
+	public String toString() {
+	       String result = "";
+	       for(int i=0;i<this.count;i++) {
+    		   if(this.child[i]!=null)
+	    		   result = result + this.child[i].toString();
+    		   result = result + this.getValue(i)+",";
+	    	   if(this.child[i+1]!=null)
+	    		   result = result + this.child[i+1].toString();
+	       }
+	       
+	       return result;		
+	}
 }

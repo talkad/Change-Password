@@ -26,13 +26,13 @@ public class BTree  {
 			return search(root.getChild(i),key);
 	}
 	//this will be the method to insert in general, it will call insert non full if needed.                                  
-	public void insert(BTree t, String key)
+	public void insert(String key)
 	{
-		BTreeNode r = t.root;//this method finds the node to be inserted as it goes through this starting at root node.
+		BTreeNode r = this.root;//this method finds the node to be inserted as it goes through this starting at root node.
 		if(r.getCount() == 2*order - 1)//if is full
 		{
 			BTreeNode s = new BTreeNode(order);//new node
-			t.root = s;
+			this.root = s;
 			s.setLeaf(false);
 			s.setCount(0); 
 			s.getChild()[0] = r;
@@ -103,7 +103,7 @@ public class BTree  {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
 			while ((next = reader.readLine()) != null) { 
-				this.insert(this, next);
+				this.insert(next);
 			}			
 		}
 		catch (Exception e) {
@@ -112,6 +112,9 @@ public class BTree  {
 	}
 	public BTreeNode getRoot() {
 		return this.root;
+	}
+	public String toString() {
+		return this.root.toString();
 	}
 	
 }
