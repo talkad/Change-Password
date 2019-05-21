@@ -12,7 +12,7 @@ public class BTreeNode {
 		this.t = t;  //assign size
 		this.key=new String[2*t - 1];  // array of proper size
 		this.child=new BTreeNode[2*t]; // array of refs proper size
-		this.leaf=true; // everynode is leaf at first;
+		this.leaf=true; // every node is leaf at first;
 		this.count=0;//until we add keys later.
 		this.height=0;
 	}

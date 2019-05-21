@@ -7,9 +7,10 @@ public class BTree  {
 	public BTree(String tVal)
 	{
 		this.order =Integer.parseInt(tVal);
-
 		root = new BTreeNode(order);
-
+	}
+	public BTreeNode getRoot() {
+		return this.root;
 	}
 	public BTreeNode search(BTreeNode root, String key)
 	{
@@ -40,31 +41,30 @@ public class BTree  {
 		else
 			nonfullInsert(r,key);
 	}
-//  this will be the split method.  It will split node we  |
-//  want to insert into if it is full.                     |
+//  this will be the split method. It will split node we want to insert into if it is full.                     
 	public void split(BTreeNode x, int i, BTreeNode y)
 	{
 		BTreeNode z = new BTreeNode(order);
 		z.setLeaf(y.isLeaf());
-		z.setCount(order - 1);//this is updated size
+		z.setCount(order - 1);
 		for(int j = 0; j < order - 1; j++)
-			z.getKey()[j] = y.getKey()[j+order]; //copy end of y into front of z
-		if(!y.isLeaf())//if not leaf we have to reassign child nodes.
+			z.getKey()[j] = y.getKey()[j+order];
+		if(!y.isLeaf())
 		{
 			for(int k = 0; k < order; k++)
-				z.getChild()[k] = y.getChild()[k+order]; //reassing child of y			
+				z.getChild()[k] = y.getChild()[k+order];	
 		}
-		y.setCount(order - 1); //new size of y
-		for(int j = x.getCount() ; j> i ; j--)//if we push key into x we have to rearrange child nodes
-			x.getChild()[j+1] = x.getChild()[j]; //shift children of x
-		x.getChild()[i+1] = z; //reassign i+1 child of x
+		y.setCount(order - 1);
+		for(int j = x.getCount() ; j> i ; j--)
+			x.getChild()[j+1] = x.getChild()[j];
+		x.getChild()[i+1] = z;
 		for(int j = x.getCount(); j> i; j--)
-			x.getKey()[j] = x.getKey()[j-1]; // shift keys
-		x.getKey()[i] = y.getKey()[order-1];//finally push value up into root.
-		y.getKey()[order-1 ] = null; //erase value where we pushed from
+			x.getKey()[j] = x.getKey()[j-1];
+		x.getKey()[i] = y.getKey()[order-1];
+		y.getKey()[order-1 ] = null;
 		for(int j = 0; j < order - 1; j++)
-			y.getKey()[j + order] = null; //'delete' old values
-		x.setCount(x.getCount() + 1);  //increase count of keys in x
+			y.getKey()[j + order] = null;
+		x.setCount(x.getCount() + 1);
 	}
 
 	// this will be insert method when node is not full.
@@ -96,12 +96,40 @@ public class BTree  {
 			nonfullInsert(x.getChild()[j],key);
 		}
 	}
+
+	public void delete(String key) {
+		BTreeNode temp = new BTreeNode(order);
+		temp = search(this.root,key);
+		if(temp!=null && temp.isLeaf() && temp.getCount()>order-1)
+			deleteCase1(key,temp);
+	}
+	  public void deleteCase1(String key,BTreeNode temp)
+	  {
+				int i = 0;
+				while(key.compareTo(temp.getValue(i))>0)
+					i++;
+				for(int j = i; j < temp.getCount()-1; j++)
+					temp.getKey()[j] = temp.getValue(j+1);
+				temp.setCount(temp.getCount() - 1);
+	 }
 	public void createFullTree(String path) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
 			while ((next = reader.readLine()) != null) { 
 				this.insert(next);
+			}			
+		}
+		catch (Exception e) {
+			throw new RuntimeException("reading file exception");
+		}
+	}
+	public void deleteKeysFromTree(String path) {
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(path));
+			String next;
+			while ((next = reader.readLine()) != null) { 
+				this.delete("welcome");
 			}			
 		}
 		catch (Exception e) {
@@ -124,11 +152,8 @@ public class BTree  {
 		}
 		else
 			return;
+	}
 
-	}
-	public BTreeNode getRoot() {
-		return this.root;
-	}
 	public String toString() {
 		this.root.UpdateTreeDepth(this.root, 0);
 		String s=this.root.toString(0);
