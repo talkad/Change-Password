@@ -114,7 +114,9 @@ public class BTree  {
 		return this.root;
 	}
 	public String toString() {
-		return this.root.toString();
+		this.root.printLevelOrder(this.root);
+		String s=this.root.toString(0);
+		return s.substring(0, s.length()-1);
 	}
 	
 }
