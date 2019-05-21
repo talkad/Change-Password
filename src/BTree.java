@@ -14,41 +14,38 @@ public class BTree  {
 	public BTreeNode search(BTreeNode root, String key)
 	{
 		int i = 0;
-		//we always want to start searching the 0th index of node
-		while(i < root.getCount() && key.compareTo(root.getKey()[i])>0)//keep incrementing in node while key > current value.
+		while(i < root.getCount() && key.compareTo(root.getKey()[i])>0)
 			i++;
-		if(i <= root.getCount() && key.equals(root.getKey()[i]))//obviously if key is in node we went to return node.	
+		if(i <= root.getCount() && key.equals(root.getKey()[i]))	
 			return root;
-		if(root.isLeaf())//since we've already checked root
-    			    //if it is leaf we don't have anything else to check
+		if(root.isLeaf())
   			return null ;
-		else//else if it is not leave recurse down through ith child
+		else
 			return search(root.getChild(i),key);
 	}
 	//this will be the method to insert in general, it will call insert non full if needed.                                  
 	public void insert(String key)
 	{
-		BTreeNode r = this.root;//this method finds the node to be inserted as it goes through this starting at root node.
-		if(r.getCount() == 2*order - 1)//if is full
+		BTreeNode r = this.root;
+		if(r.getCount() == 2*order - 1)
 		{
-			BTreeNode s = new BTreeNode(order);//new node
+			BTreeNode s = new BTreeNode(order);
 			this.root = s;
 			s.setLeaf(false);
 			s.setCount(0); 
 			s.getChild()[0] = r;
-			split(s,0,r);//split root
-			nonfullInsert(s, key); //call insert method
+			split(s,0,r);
+			nonfullInsert(s, key);
 		}
 		else
-			nonfullInsert(r,key);//if its not full just insert it
+			nonfullInsert(r,key);
 	}
 //  this will be the split method.  It will split node we  |
 //  want to insert into if it is full.                     |
-
 	public void split(BTreeNode x, int i, BTreeNode y)
 	{
-		BTreeNode z = new BTreeNode(order);//gotta have extra node if we are to split.
-		z.setLeaf(y.isLeaf());//set boolean to same as y
+		BTreeNode z = new BTreeNode(order);
+		z.setLeaf(y.isLeaf());
 		z.setCount(order - 1);//this is updated size
 		for(int j = 0; j < order - 1; j++)
 			z.getKey()[j] = y.getKey()[j+order]; //copy end of y into front of z
@@ -62,40 +59,41 @@ public class BTree  {
 			x.getChild()[j+1] = x.getChild()[j]; //shift children of x
 		x.getChild()[i+1] = z; //reassign i+1 child of x
 		for(int j = x.getCount(); j> i; j--)
-			x.getKey()[j + 1] = x.getKey()[j]; // shift keys
+			x.getKey()[j] = x.getKey()[j-1]; // shift keys
 		x.getKey()[i] = y.getKey()[order-1];//finally push value up into root.
-		y.getKey()[order-1 ] = ""; //erase value where we pushed from
+		y.getKey()[order-1 ] = null; //erase value where we pushed from
 		for(int j = 0; j < order - 1; j++)
-			y.getKey()[j + order] = ""; //'delete' old values
+			y.getKey()[j + order] = null; //'delete' old values
 		x.setCount(x.getCount() + 1);  //increase count of keys in x
 	}
 
 	// this will be insert method when node is not full.
 	public void nonfullInsert(BTreeNode x, String key)
 	{
-		int i = x.getCount(); //i is number of keys in node x
+		int i = x.getCount();
 		if(x.isLeaf())
 		{
-			while(i >= 1 && key.compareTo(x.getKey()[i-1])<0)//here find spot to put key.
+			while(i >= 1 && key.compareTo(x.getKey()[i-1])<0)
 			{
-				x.getKey()[i] = x.getKey()[i-1];//shift values to make room
-				i--;//decrement
+				x.getKey()[i] = x.getKey()[i-1];
+				i--;
 			}
-			x.getKey()[i] = key;//finally assign value to node
-			x.setCount(x.getCount() + 1); //increment count of keys in this node now.
+			x.getKey()[i] = key;
+			x.setCount(x.getCount() + 1);
 		}
 		else
 		{
 			int j = 0;
-			while(j < x.getCount()  && key.compareTo(x.getKey()[j])>0)//find spot to recurse on correct child  		
+			//updateCount(x);
+			while(j < x.getCount()  && key.compareTo(x.getKey()[j])>=0)		
 				j++;
 			if(x.getChild()[j].getCount() == order*2 - 1)
 			{
-				split(x,j,x.getChild()[j]);//call split on node x's ith child
+				split(x,j,x.getChild()[j]);
 				if(key.compareTo(x.getKey()[j])>0)
 					j++;
 			}
-			nonfullInsert(x.getChild()[j],key);//recurse
+			nonfullInsert(x.getChild()[j],key);
 		}
 	}
 	public void createFullTree(String path) {
@@ -110,11 +108,29 @@ public class BTree  {
 			throw new RuntimeException("reading file exception");
 		}
 	}
+	private void updateCount(BTreeNode node) {
+		int count=0;
+		if(node!=null) {
+		for(int i=0;i<node.getCount();i++) {
+			if(node.getKey()[i]!=null ) 
+				count++;
+		}
+		node.setCount(count);
+		for(int i=0;i<node.getCount();i++) {
+			updateCount(node.getChild(i));
+		}
+		if(node.getChild()[count]!=null)
+		updateCount(node.getChild(count));
+		}
+		else
+			return;
+
+	}
 	public BTreeNode getRoot() {
 		return this.root;
 	}
 	public String toString() {
-		this.root.printLevelOrder(this.root);
+		this.root.UpdateTreeDepth(this.root, 0);
 		String s=this.root.toString(0);
 		return s.substring(0, s.length()-1);
 	}
