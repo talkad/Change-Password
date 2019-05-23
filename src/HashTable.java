@@ -38,7 +38,7 @@ public class HashTable {
 			int key;
 			while ((next = reader.readLine()) != null) { 
 				key=(int)stringToNumber(next);
-				if(hashTable[hashFunction(key)]!=null) 
+				if(hashTable[hashFunction(key)]==null) 
 					hashTable[hashFunction(key)]=new HashList<>();
 				hashTable[hashFunction(key)].addFirst(key);
 			}			

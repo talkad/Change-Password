@@ -67,6 +67,7 @@ public class BloomFilter {
 		while(currentFunc.getNext()!=null) {
 			if(hashTable[currentFunc.getKey().hashFunction(key, hashTable.length)]!=1)
 				return false;
+			currentFunc=currentFunc.getNext();
 		}		
 		return  true;
 	}	
