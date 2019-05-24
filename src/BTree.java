@@ -15,7 +15,7 @@ public class BTree  {
 	public BTreeNode search(BTreeNode root, String key)
 	{
 		int i = 0;
-		while(i < root.getCount() && key.compareTo(root.getKey()[i])>0)
+		while(i < root.getCount()-1 && key.compareTo(root.getKey()[i])>0)
 			i++;
 		if(i <= root.getCount() && key.equals(root.getKey()[i]))	
 			return root;
@@ -96,22 +96,20 @@ public class BTree  {
 			nonfullInsert(x.getChild()[j],key);
 		}
 	}
+	public void delete(String key) 
+	{ 
+	    if (this.root==null) 
+	    { 
+	        System.out.println("The tree is empty"); 
+	        return; 
+	    } 
+	    // Call the remove function for root 
+	    this.root.delete(key);  
+	    int i=0;
+	    while(this.root.getCount()==0)
+	    	this.root=this.root.getChild(0);
+	} 
 
-	public void delete(String key) {
-		BTreeNode temp = new BTreeNode(order);
-		temp = search(this.root,key);
-		if(temp!=null && temp.isLeaf() && temp.getCount()>order-1)
-			deleteCase1(key,temp);
-	}
-	  public void deleteCase1(String key,BTreeNode temp)
-	  {
-				int i = 0;
-				while(key.compareTo(temp.getValue(i))>0)
-					i++;
-				for(int j = i; j < temp.getCount()-1; j++)
-					temp.getKey()[j] = temp.getValue(j+1);
-				temp.setCount(temp.getCount() - 1);
-	 }
 	public void createFullTree(String path) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
@@ -129,7 +127,7 @@ public class BTree  {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
 			while ((next = reader.readLine()) != null) { 
-				this.delete("welcome");
+				this.delete(next);
 			}			
 		}
 		catch (Exception e) {
@@ -157,7 +155,24 @@ public class BTree  {
 	public String toString() {
 		this.root.UpdateTreeDepth(this.root, 0);
 		String s=this.root.toString(0);
-		return s.substring(0, s.length()-1);
+		return s.substring(0, s.length()-2);
+	}
+	public String getSearchTime(String string) {
+		double time1=System.nanoTime()/1000000.0;
+		double time2=0;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(string));
+			String next;
+			while ((next = reader.readLine()) != null) { 
+				this.search(this.root,next);
+			}		
+			time2=System.nanoTime()/1000000.0;
+			String s=Double.toString(time2-time1);
+			return s.substring(0, 5);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("reading file exception");
+		}
 	}
 	
 }

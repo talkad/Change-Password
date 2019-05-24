@@ -65,5 +65,23 @@ public class HashTable {
 	public boolean isExistsTable(int key) {
 		return isExistsList(hashTable[hashFunction(key)], key);
 	}
+
+	public String getSearchTime(String string) {
+		double time1=System.nanoTime()/1000000.0;
+		double time2=0;
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(string));
+			String next;
+			while ((next = reader.readLine()) != null) { 
+				this.isExistsTable(this.stringToNumber(next));
+			}		
+			time2=System.nanoTime()/1000000.0;
+			String s=Double.toString(time2-time1);
+			return s.substring(0, 5);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("reading file exception");
+		}
+	}
 	
 }
