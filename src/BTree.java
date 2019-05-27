@@ -19,12 +19,12 @@ public class BTree  {
 			i++;
 		if(i <= root.getCount() && key.equals(root.getKey()[i]))	
 			return root;
-		if(root.isLeaf())
+		if(root.getIsLeaf())
   			return null ;
 		else
 			return search(root.getChild(i),key);
 	}
-	//this will be the method to insert in general, it will call insert non full if needed.                                  
+	
 	public void insert(String key)
 	{
 		BTreeNode r = this.root;
@@ -32,7 +32,7 @@ public class BTree  {
 		{
 			BTreeNode s = new BTreeNode(order);
 			this.root = s;
-			s.setLeaf(false);
+			s.setIsLeaf(false);
 			s.setCount(0); 
 			s.getChild()[0] = r;
 			split(s,0,r);
@@ -41,15 +41,14 @@ public class BTree  {
 		else
 			nonfullInsert(r,key);
 	}
-//  this will be the split method. It will split node we want to insert into if it is full.                     
 	public void split(BTreeNode x, int i, BTreeNode y)
 	{
 		BTreeNode z = new BTreeNode(order);
-		z.setLeaf(y.isLeaf());
+		z.setIsLeaf(y.getIsLeaf());
 		z.setCount(order - 1);
 		for(int j = 0; j < order - 1; j++)
 			z.getKey()[j] = y.getKey()[j+order];
-		if(!y.isLeaf())
+		if(!y.getIsLeaf())
 		{
 			for(int k = 0; k < order; k++)
 				z.getChild()[k] = y.getChild()[k+order];	
@@ -67,11 +66,10 @@ public class BTree  {
 		x.setCount(x.getCount() + 1);
 	}
 
-	// this will be insert method when node is not full.
 	public void nonfullInsert(BTreeNode x, String key)
 	{
 		int i = x.getCount();
-		if(x.isLeaf())
+		if(x.getIsLeaf())
 		{
 			while(i >= 1 && key.compareTo(x.getKey()[i-1])<0)
 			{
@@ -84,7 +82,6 @@ public class BTree  {
 		else
 		{
 			int j = 0;
-			//updateCount(x);
 			while(j < x.getCount()  && key.compareTo(x.getKey()[j])>=0)		
 				j++;
 			if(x.getChild()[j].getCount() == order*2 - 1)
@@ -103,7 +100,6 @@ public class BTree  {
 	        System.out.println("The tree is empty"); 
 	        return; 
 	    } 
-	    // Call the remove function for root 
 	    this.root.delete(key);  
 	    int i=0;
 	    while(this.root.getCount()==0)
@@ -134,24 +130,6 @@ public class BTree  {
 			throw new RuntimeException("reading file exception");
 		}
 	}
-	private void updateCount(BTreeNode node) {
-		int count=0;
-		if(node!=null) {
-		for(int i=0;i<node.getCount();i++) {
-			if(node.getKey()[i]!=null ) 
-				count++;
-		}
-		node.setCount(count);
-		for(int i=0;i<node.getCount();i++) {
-			updateCount(node.getChild(i));
-		}
-		if(node.getChild()[count]!=null)
-		updateCount(node.getChild(count));
-		}
-		else
-			return;
-	}
-
 	public String toString() {
 		this.root.UpdateTreeDepth(this.root, 0);
 		String s=this.root.toString(0);
