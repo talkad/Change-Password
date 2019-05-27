@@ -1,8 +1,5 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
 public class BloomFilter {
 
@@ -34,8 +31,8 @@ public class BloomFilter {
 
 	// convert ASCII strings into natural numbers with Horner's Rule
 	private int stringToNumber(String pwd) {
-		long key=pwd.charAt(pwd.length()-1);
-		for(int i=pwd.length()-2;i>=0;i--) {
+		long key=pwd.charAt(0);
+		for(int i=1;i<pwd.length();i++) {
 			key=(pwd.charAt(i) + 256*key)%15486907;
 		}
 		return (int)key;
@@ -48,9 +45,9 @@ public class BloomFilter {
 			int key;
 			HashListElement<HashFunction> currentFunc;
 			while ((next = reader.readLine()) != null) { 
-				key=(int)stringToNumber(next);
+				key=stringToNumber(next);
 				currentFunc=hashFunctions.getFirst();
-				while(currentFunc.getNext()!=null) {
+				while(currentFunc!=null) {
 					hashTable[currentFunc.getKey().hashFunction(key, hashTable.length)]=1;		
 					currentFunc=currentFunc.getNext();
 				}
@@ -64,7 +61,7 @@ public class BloomFilter {
 	// check if key exists in Bloom Filter
 	private boolean isExistsBloom(int key) {
 		HashListElement<HashFunction> currentFunc=hashFunctions.getFirst();
-		while(currentFunc.getNext()!=null) {
+		while(currentFunc!=null) {
 			if(hashTable[currentFunc.getKey().hashFunction(key, hashTable.length)]!=1)
 				return false;
 			currentFunc=currentFunc.getNext();
@@ -112,6 +109,4 @@ public class BloomFilter {
 			throw new RuntimeException("reading file exception");
 		}
 	}
-	
-	
 }
