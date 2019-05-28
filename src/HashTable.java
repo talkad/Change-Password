@@ -3,7 +3,7 @@ import java.io.FileReader;
 
 public class HashTable {
 
-	private HashList<Integer>[] hashTable;
+	private HashList[] hashTable;
 
 	public HashTable(String m2) {
 		try {
@@ -38,7 +38,7 @@ public class HashTable {
 			while ((next = reader.readLine()) != null) {
 				key =  stringToNumber(next);
 				if (hashTable[hashFunction(key)] == null)
-					hashTable[hashFunction(key)] = new HashList<>();
+					hashTable[hashFunction(key)] = new HashList();
 				hashTable[hashFunction(key)].addFirst(key);
 			}
 		} catch (Exception e) {
@@ -47,9 +47,9 @@ public class HashTable {
 	}
 
 	// check if key exists in HashList
-	private boolean isExistsList(HashList<Integer> list, int key) {
+	private boolean isExistsList(HashList list, int key) {
 		if (list != null) {
-			HashListElement<Integer> link = list.getFirst();
+			HashListElement link = list.getFirst();
 			while (link != null) {
 				if (link.getKey() == key)
 					return true;

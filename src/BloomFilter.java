@@ -4,7 +4,7 @@ import java.io.FileReader;
 public class BloomFilter {
 
 	private int[] hashTable;
-	private HashList<HashFunction> hashFunctions;
+	private LinkedList<HashFunction> hashFunctions;
 	
 	//Receives the size of the hash table and a path for hash_functions.txt
 	public BloomFilter(String m1, String path)  {
@@ -18,7 +18,7 @@ public class BloomFilter {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
 			String[] function;
-			hashFunctions=new HashList<>();
+			hashFunctions=new LinkedList<>();
 			while ((next = reader.readLine()) != null) {
 				function=next.split("_");
 	        	hashFunctions.addFirst(new HashFunction(Integer.parseInt(function[0]),Integer.parseInt(function[1])));
@@ -43,7 +43,7 @@ public class BloomFilter {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
 			int key;
-			HashListElement<HashFunction> currentFunc;
+			Link<HashFunction> currentFunc;
 			while ((next = reader.readLine()) != null) { 
 				key=stringToNumber(next);
 				currentFunc=hashFunctions.getFirst();
@@ -60,7 +60,7 @@ public class BloomFilter {
 
 	// check if key exists in Bloom Filter
 	private boolean isExistsBloom(int key) {
-		HashListElement<HashFunction> currentFunc=hashFunctions.getFirst();
+		Link<HashFunction> currentFunc=hashFunctions.getFirst();
 		while(currentFunc!=null) {
 			if(hashTable[currentFunc.getKey().hashFunction(key, hashTable.length)]!=1)
 				return false;
