@@ -101,7 +101,7 @@ public class BTree {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
 			while ((next = reader.readLine()) != null) {
-				this.insert(next);
+				this.insert(next.toLowerCase());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("reading file exception");
@@ -123,7 +123,7 @@ public class BTree {
 	public String toString() {
 		this.root.UpdateTreeDepth(this.root, 0);
 		String s = this.root.toString(0);
-		return s.substring(0, s.length() - 2);
+		return s.substring(0, s.length() - 1);
 	}
 
 	public String getSearchTime(String string) {

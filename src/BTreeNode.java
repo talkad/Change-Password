@@ -61,7 +61,7 @@ public class BTreeNode {
 		for (int i = 0; i < this.count; i++) {
 			if (this.child[i] != null)
 				result = result + this.child[i].toString(depth);
-			result = result + this.getValue(i) + "_" + this.depth + ", ";
+			result = result + this.getValue(i) + "_" + this.depth + ",";
 		}
 		if (this.child[this.count] != null)
 			result = result + this.child[this.count].toString(depth);
