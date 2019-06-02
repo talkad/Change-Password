@@ -77,26 +77,33 @@ public class BTreeNode {
 		UpdateTreeDepth(root.child[root.count], level + 1);
 	}
 
+	public void deleteAt(int indexDelete) {
+		if (this.isLeaf)
+			removeFromLeaf(indexDelete);
+		else
+			removeFromNonLeaf(indexDelete);
+	}
+	
+	public void deleteFromChild(int indexDelete, String key) {
+		if (this.isLeaf) 
+			System.out.println("The key " + key + " is does not exist in the tree");
+		else {
+		boolean flag = (indexDelete == this.count);
+		if (this.child[indexDelete].count < t)
+			fill(indexDelete);
+		if (flag && indexDelete > this.count)
+			this.child[indexDelete - 1].delete(key);
+		else
+			this.child[indexDelete].delete(key);
+		}
+	}
+	
 	public void delete(String key) {
 		int indexDelete = findKey(key);
-		if (indexDelete < this.count && this.key[indexDelete].equals(key)) {
-			if (this.isLeaf)
-				removeFromLeaf(indexDelete);
-			else
-				removeFromNonLeaf(indexDelete);
-		} else {
-			if (this.isLeaf) {
-				System.out.println("The key " + key + " is does not exist in the tree");
-				return;
-			}
-			boolean flag = (indexDelete == this.count);
-			if (this.child[indexDelete].count < t)
-				fill(indexDelete);
-			if (flag && indexDelete > this.count)
-				this.child[indexDelete - 1].delete(key);
-			else
-				this.child[indexDelete].delete(key);
-		}
+		if (indexDelete < this.count && this.key[indexDelete].equals(key)) 
+			deleteAt(indexDelete);
+		 else 
+			deleteFromChild(indexDelete,key);
 	}
 
 	public int findKey(String key) {
@@ -107,7 +114,7 @@ public class BTreeNode {
 	}
 
 	public void removeFromLeaf(int indexDelete) {
-		for (int i = indexDelete + 1; i < this.count; ++i)
+		for (int i = indexDelete + 1; i < this.count; i++)
 			this.key[i - 1] = this.key[i];
 		this.count--;
 	}
@@ -159,10 +166,10 @@ public class BTreeNode {
 		BTreeNode child1 = this.child[indexDelete];
 		BTreeNode child2 = this.child[indexDelete - 1];
 
-		for (int i = child1.count - 1; i >= 0; --i)
+		for (int i = child1.count - 1; i >= 0; i--)
 			child1.key[i + 1] = child1.key[i];
 		if (!child1.isLeaf) {
-			for (int i = child1.count; i >= 0; --i)
+			for (int i = child1.count; i >= 0; i--)
 				child1.child[i + 1] = child1.child[i];
 		}
 		child1.key[0] = this.key[indexDelete - 1];
@@ -180,10 +187,10 @@ public class BTreeNode {
 		if (!(child1.isLeaf))
 			child1.child[(child1.count) + 1] = child2.child[0];
 		this.key[indexDelete] = child2.key[0];
-		for (int i = 1; i < child2.count; ++i)
+		for (int i = 1; i < child2.count; i++)
 			child2.key[i - 1] = child2.key[i];
 		if (!child2.isLeaf) {
-			for (int i = 1; i <= child2.count; ++i)
+			for (int i = 1; i <= child2.count; i++)
 				child2.child[i - 1] = child2.child[i];
 		}
 		child1.count++;
@@ -194,15 +201,15 @@ public class BTreeNode {
 		BTreeNode child1 = this.child[indexDelete];
 		BTreeNode child2 = this.child[indexDelete + 1];
 		child1.key[t - 1] = this.key[indexDelete];
-		for (int i = 0; i < child2.count; ++i)
+		for (int i = 0; i < child2.count; i++)
 			child1.key[i + t] = child2.key[i];
 		if (!child1.isLeaf) {
-			for (int i = 0; i <= child2.count; ++i)
+			for (int i = 0; i <= child2.count; i++)
 				child1.child[i + t] = child2.child[i];
 		}
-		for (int i = indexDelete + 1; i < count; ++i)
+		for (int i = indexDelete + 1; i < count; i++)
 			this.key[i - 1] = key[i];
-		for (int i = indexDelete + 2; i <= count; ++i)
+		for (int i = indexDelete + 2; i <= count; i++)
 			this.child[i - 1] = this.child[i];
 		child1.count = child1.count + child2.count + 1;
 		count--;

@@ -51,6 +51,11 @@ public class BTree {
 				z.getChild()[k] = y.getChild()[k + order];
 		}
 		y.setCount(order - 1);
+		rearrangeChildren(x,i,y,z);
+		x.setCount(x.getCount() + 1);
+	}
+
+	private void rearrangeChildren(BTreeNode x, int i, BTreeNode y, BTreeNode z) {
 		for (int j = x.getCount(); j > i; j--)
 			x.getChild()[j + 1] = x.getChild()[j];
 		x.getChild()[i + 1] = z;
@@ -60,29 +65,37 @@ public class BTree {
 		y.getKey()[order - 1] = null;
 		for (int j = 0; j < order - 1; j++)
 			y.getKey()[j + order] = null;
+	}
+	
+	public void nonFullInsertLeaf(BTreeNode x, String key)
+	{
+		int i = x.getCount();
+		while (i >= 1 && key.compareTo(x.getKey()[i - 1]) < 0) {
+			x.getKey()[i] = x.getKey()[i - 1];
+			i--;
+		}
+		x.getKey()[i] = key;
 		x.setCount(x.getCount() + 1);
 	}
-
-	public void nonfullInsert(BTreeNode x, String key) {
-		int i = x.getCount();
-		if (x.getIsLeaf()) {
-			while (i >= 1 && key.compareTo(x.getKey()[i - 1]) < 0) {
-				x.getKey()[i] = x.getKey()[i - 1];
-				i--;
-			}
-			x.getKey()[i] = key;
-			x.setCount(x.getCount() + 1);
-		} else {
-			int j = 0;
-			while (j < x.getCount() && key.compareTo(x.getKey()[j]) >= 0)
+	
+	public void nonFullInsertInternal(BTreeNode x, String key)
+	{
+		int j = 0;
+		while (j < x.getCount() && key.compareTo(x.getKey()[j]) >= 0)
+			j++;
+		if (x.getChild()[j].getCount() == order * 2 - 1) {
+			split(x, j, x.getChild()[j]);
+			if (key.compareTo(x.getKey()[j]) > 0)
 				j++;
-			if (x.getChild()[j].getCount() == order * 2 - 1) {
-				split(x, j, x.getChild()[j]);
-				if (key.compareTo(x.getKey()[j]) > 0)
-					j++;
-			}
-			nonfullInsert(x.getChild()[j], key);
 		}
+		nonfullInsert(x.getChild()[j], key);
+	}
+	
+	public void nonfullInsert(BTreeNode x, String key) {
+		if (x.getIsLeaf()) 
+			nonFullInsertLeaf(x,key);
+		else 
+			nonFullInsertInternal(x,key);
 	}
 
 	public void delete(String key) {
