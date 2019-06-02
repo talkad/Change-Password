@@ -91,7 +91,7 @@ public class BTree {
 			return;
 		}
 		this.root.delete(key);
-		while (this.root.getCount() == 0)
+		while (this.root.getChild(0)!=null&&this.root.getCount() == 0 )
 			this.root = this.root.getChild(0);
 	}
 
@@ -122,7 +122,10 @@ public class BTree {
 	public String toString() {
 		this.root.UpdateTreeDepth(this.root, 0);
 		String s = this.root.toString(0);
-		return s.substring(0, s.length() - 1);
+		if(s.length()>0)
+			return s.substring(0, s.length() - 1);
+		return s;
+
 	}
 
 	public String getSearchTime(String string) {
