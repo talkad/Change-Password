@@ -26,8 +26,6 @@ public class HashList {
 	
 	//Adds element to the beginning of this list
 	public void addFirst(int element) {
-//		if (element == null)
-//			throw new NullPointerException();
 		first = new HashListElement(element, first);
 	}
 

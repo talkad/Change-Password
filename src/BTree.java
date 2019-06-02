@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class BTree {
-	static int order;
+	private int order;
 	private BTreeNode root;
 
 	public BTree(String tVal) {
@@ -91,7 +91,6 @@ public class BTree {
 			return;
 		}
 		this.root.delete(key);
-		int i = 0;
 		while (this.root.getCount() == 0)
 			this.root = this.root.getChild(0);
 	}

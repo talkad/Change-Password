@@ -15,10 +15,10 @@ public class Runner {
 	public static void main(String[] args) {
 
 		//Create the Bloom Filter.
-		BloomFilter bloomFilter = contructBloomFilter("32");
+		BloomFilter bloomFilter = contructBloomFilter(args[0]);
 				
 		//Create the Hash Table.
-		HashTable hashTable = contructHashTable("32");
+		HashTable hashTable = contructHashTable(args[1]);
 
 		//Find the percentage of false-positives
 		String falsePositivesPercent = bloomFilter.getFalsePositivePercentage(hashTable, System.getProperty("user.dir")+"/requested_passwords.txt");
@@ -27,7 +27,7 @@ public class Runner {
 		String rejectedPasswordsAmount = bloomFilter.getRejectedPasswordsAmount(System.getProperty("user.dir")+"/requested_passwords.txt");
 
 		//Create the B tree using the t value and the path to the bad_passwords file.
-		BTree btree = createTree("2");
+		BTree btree = createTree(args[2]);
 
 
 		//Get the DFS representation of the btree
