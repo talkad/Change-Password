@@ -119,17 +119,25 @@ public class BTreeNode {
 		this.count--;
 	}
 
+	private void removeFromPred(int indexDelete) {
+		String predString = predKey(indexDelete);
+		this.key[indexDelete] = predString;
+		this.child[indexDelete].delete(predString);
+	}
+	
+	private void removeFromSucc(int indexDelete) {
+		String successor = succKey(indexDelete);
+		this.key[indexDelete] = successor;
+		this.child[indexDelete + 1].delete(successor);
+	}
+	
 	public void removeFromNonLeaf(int indexDelete) {
 		String key = this.key[indexDelete];
-		if (this.child[indexDelete].count >= t) {
-			String predString = predKey(indexDelete);
-			this.key[indexDelete] = predString;
-			this.child[indexDelete].delete(predString);
-		} else if (this.child[indexDelete + 1].count >= t) {
-			String successor = succKey(indexDelete);
-			this.key[indexDelete] = successor;
-			this.child[indexDelete + 1].delete(successor);
-		} else {
+		if (this.child[indexDelete].count >= t) 
+			removeFromPred(indexDelete);
+		else if (this.child[indexDelete + 1].count >= t) 
+			removeFromSucc(indexDelete);
+		else {
 			merging(indexDelete);
 			this.child[indexDelete].delete(key);
 		}
@@ -200,6 +208,12 @@ public class BTreeNode {
 	public void merging(int indexDelete) {
 		BTreeNode child1 = this.child[indexDelete];
 		BTreeNode child2 = this.child[indexDelete + 1];
+		rearrangeNode(child1, child2, indexDelete);
+		child1.count = child1.count + child2.count + 1;
+		count--;
+	}
+	
+	private void rearrangeNode(BTreeNode child1, BTreeNode child2, int indexDelete) {
 		child1.key[t - 1] = this.key[indexDelete];
 		for (int i = 0; i < child2.count; i++)
 			child1.key[i + t] = child2.key[i];
@@ -211,8 +225,6 @@ public class BTreeNode {
 			this.key[i - 1] = key[i];
 		for (int i = indexDelete + 2; i <= count; i++)
 			this.child[i - 1] = this.child[i];
-		child1.count = child1.count + child2.count + 1;
-		count--;
 	}
 
 }

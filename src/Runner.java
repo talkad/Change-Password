@@ -29,7 +29,6 @@ public class Runner {
 		//Create the B tree using the t value and the path to the bad_passwords file.
 		BTree btree = createTree(args[2]);
 
-
 		//Get the DFS representation of the btree
 		String treeLayout = btree.toString();
 
