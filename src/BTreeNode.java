@@ -90,7 +90,7 @@ public class BTreeNode {
 		else {
 		boolean flag = (indexDelete == this.count);
 		if (this.child[indexDelete].count < t)
-			fill(indexDelete);
+			increaseElements(indexDelete);
 		if (flag && indexDelete > this.count)
 			this.child[indexDelete - 1].delete(key);
 		else
@@ -113,34 +113,41 @@ public class BTreeNode {
 		return indexDelete;
 	}
 
+	// case 1
 	public void removeFromLeaf(int indexDelete) {
 		for (int i = indexDelete + 1; i < this.count; i++)
 			this.key[i - 1] = this.key[i];
 		this.count--;
 	}
 
+	//case 2
 	private void removeFromPred(int indexDelete) {
 		String predString = predKey(indexDelete);
 		this.key[indexDelete] = predString;
 		this.child[indexDelete].delete(predString);
 	}
 	
+	//case 3
 	private void removeFromSucc(int indexDelete) {
 		String successor = succKey(indexDelete);
 		this.key[indexDelete] = successor;
 		this.child[indexDelete + 1].delete(successor);
 	}
 	
-	public void removeFromNonLeaf(int indexDelete) {
+	//case 4
+	private void mergeDelete(int indexDelete) {
 		String key = this.key[indexDelete];
+		merging(indexDelete);
+		this.child[indexDelete].delete(key);
+	}
+	
+	public void removeFromNonLeaf(int indexDelete) {
 		if (this.child[indexDelete].count >= t) 
 			removeFromPred(indexDelete);
 		else if (this.child[indexDelete + 1].count >= t) 
 			removeFromSucc(indexDelete);
-		else {
-			merging(indexDelete);
-			this.child[indexDelete].delete(key);
-		}
+		else 
+			mergeDelete(indexDelete);
 	}
 
 	public String predKey(int indexDelete) {
@@ -157,23 +164,32 @@ public class BTreeNode {
 		return current.key[0];
 	}
 
-	public void fill(int indexDelete) {
+	public boolean shifting(int indexDelete) {
+		boolean isShift=true;
 		if (indexDelete != 0 && this.child[indexDelete - 1].count >= t)
-			borrowFromPrev(indexDelete);
+			moveElementFromPrev(indexDelete);
 		else if (indexDelete != count && this.child[indexDelete + 1].count >= t)
-			borrowFromNext(indexDelete);
-		else {
+			moveElementFromNext(indexDelete);
+		else
+			isShift = false;
+		return isShift;
+	}
+		
+	//Before entering a node v, if v has t − 1 elements,
+	//perform shifting or merging in order to increase the
+	//number of elements.
+	public void increaseElements(int indexDelete) {
+		if(!shifting(indexDelete)) {
 			if (indexDelete != count)
 				merging(indexDelete);
 			else
 				merging(indexDelete - 1);
 		}
 	}
-
-	public void borrowFromPrev(int indexDelete) {
+	
+	public void moveElementFromPrev(int indexDelete) {
 		BTreeNode child1 = this.child[indexDelete];
 		BTreeNode child2 = this.child[indexDelete - 1];
-
 		for (int i = child1.count - 1; i >= 0; i--)
 			child1.key[i + 1] = child1.key[i];
 		if (!child1.isLeaf) {
@@ -188,7 +204,7 @@ public class BTreeNode {
 		child2.count--;
 	}
 
-	public void borrowFromNext(int indexDelete) {
+	public void moveElementFromNext(int indexDelete) {
 		BTreeNode child1 = this.child[indexDelete];
 		BTreeNode child2 = this.child[indexDelete + 1];
 		child1.key[(child1.count)] = this.key[indexDelete];
@@ -226,5 +242,6 @@ public class BTreeNode {
 		for (int i = indexDelete + 2; i <= count; i++)
 			this.child[i - 1] = this.child[i];
 	}
+
 
 }
