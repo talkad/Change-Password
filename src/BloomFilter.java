@@ -8,12 +8,8 @@ public class BloomFilter {
 	
 	//Receives the size of the hash table and a path for hash_functions.txt
 	public BloomFilter(String m1, String path)  {
-		try {
-			hashTable=new int[Integer.parseInt(m1)]; 
-		}
-		catch(Exception e) {
-			throw new RuntimeException("The first value in the constructor must be a number");
-		}		
+			hashTable=new int[validInput(m1)]; 	
+			initializeBloomFilter();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
@@ -27,6 +23,24 @@ public class BloomFilter {
 		catch (Exception e) {
 			throw new RuntimeException("reading file exception");
 		}
+	}
+	
+	private void initializeBloomFilter() {
+		for(int i=0;i<hashTable.length;i++)
+			hashTable[i]=0;
+	}
+	
+	private int validInput(String m1) {
+		try {
+			int num=Integer.parseInt(m1); 
+			if(num>0)
+				return num;
+			else
+				throw new RuntimeException("zero or negative number cannot be a size of array");
+		}
+		catch(Exception e) {
+			throw new RuntimeException("The input was invalid");
+		}	
 	}
 
 	// convert ASCII strings into natural numbers with Horner's Rule
