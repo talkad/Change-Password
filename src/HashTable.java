@@ -6,14 +6,23 @@ public class HashTable {
 	private HashList[] hashTable;
 
 	public HashTable(String m2) {
+		hashTable = new HashList[validInput(m2)];
+		// initialize values in hashTable
+		for (int i = 0; i < hashTable.length; i++) {
+			hashTable[i] = null;
+		}
+
+	}
+
+	private int validInput(String m2) {
 		try {
-			hashTable = new HashList[Integer.parseInt(m2)];
-			// initialize values in hashTable
-			for (int i = 0; i < hashTable.length; i++) {
-				hashTable[i] = null;
-			}
+			int num = Integer.parseInt(m2);
+			if (num > 0)
+				return num;
+			else
+				throw new RuntimeException("zero or negative number cannot be a size of array");
 		} catch (Exception e) {
-			throw new RuntimeException("The first value in the constructor must be a number");
+			throw new RuntimeException("The input was invalid");
 		}
 	}
 
@@ -23,11 +32,11 @@ public class HashTable {
 
 	// convert ASCII strings into natural numbers with Horner's Rule
 	private int stringToNumber(String pwd) {
-		long key=pwd.charAt(0);
-		for(int i=1;i<pwd.length();i++) {
-			key=(pwd.charAt(i) + 256*key)%15486907;
+		long key = pwd.charAt(0);
+		for (int i = 1; i < pwd.length(); i++) {
+			key = (pwd.charAt(i) + 256 * key) % 15486907;
 		}
-		return (int)key;
+		return (int) key;
 	}
 
 	public void updateTable(String path) {
@@ -36,7 +45,7 @@ public class HashTable {
 			String next;
 			int key;
 			while ((next = reader.readLine()) != null) {
-				key =  stringToNumber(next);
+				key = stringToNumber(next);
 				if (hashTable[hashFunction(key)] == null)
 					hashTable[hashFunction(key)] = new HashList();
 				hashTable[hashFunction(key)].addFirst(key);
