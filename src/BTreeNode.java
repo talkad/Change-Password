@@ -192,10 +192,8 @@ public class BTreeNode {
 		BTreeNode child2 = this.child[indexDelete - 1];
 		for (int i = child1.count - 1; i >= 0; i--)
 			child1.key[i + 1] = child1.key[i];
-		if (!child1.isLeaf) {
-			for (int i = child1.count; i >= 0; i--)
-				child1.child[i + 1] = child1.child[i];
-		}
+		if (!child1.isLeaf) 
+			pushRight(child1);
 		child1.key[0] = this.key[indexDelete - 1];
 		if (!child1.isLeaf)
 			child1.child[0] = child2.child[child2.count];
@@ -203,22 +201,30 @@ public class BTreeNode {
 		child1.count++;
 		child2.count--;
 	}
+	
+	private void pushRight(BTreeNode child) {
+		for (int i = child.count; i >= 0; i--)
+			child.child[i + 1] = child.child[i];
+	}
 
 	public void moveElementFromNext(int indexDelete) {
 		BTreeNode child1 = this.child[indexDelete];
 		BTreeNode child2 = this.child[indexDelete + 1];
 		child1.key[(child1.count)] = this.key[indexDelete];
-		if (!(child1.isLeaf))
+		if (!child1.isLeaf)
 			child1.child[(child1.count) + 1] = child2.child[0];
 		this.key[indexDelete] = child2.key[0];
 		for (int i = 1; i < child2.count; i++)
 			child2.key[i - 1] = child2.key[i];
-		if (!child2.isLeaf) {
-			for (int i = 1; i <= child2.count; i++)
-				child2.child[i - 1] = child2.child[i];
-		}
+		if (!child2.isLeaf)
+			pushLeft(child2);
 		child1.count++;
 		child2.count--;
+	}
+	
+	private void pushLeft(BTreeNode child) {
+		for (int i = 1; i <= child.count; i++)
+			child.child[i - 1] = child.child[i];
 	}
 
 	public void merging(int indexDelete) {
