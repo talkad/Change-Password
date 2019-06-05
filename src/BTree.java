@@ -125,7 +125,7 @@ public class BTree {
 			BufferedReader reader = new BufferedReader(new FileReader(path));
 			String next;
 			while ((next = reader.readLine()) != null) {
-				this.delete(next);
+				this.delete(next.toLowerCase());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("reading file exception");
@@ -148,11 +148,13 @@ public class BTree {
 			BufferedReader reader = new BufferedReader(new FileReader(string));
 			String next;
 			while ((next = reader.readLine()) != null) {
-				this.search(this.root, next);
+				this.search(this.root, next.toLowerCase());
 			}
 			time2 = System.nanoTime() / 1000000.0;
 			String s = Double.toString(time2 - time1);
-			return s.substring(0, 5);
+			if(s.length()>5)
+				return s.substring(0, 5);
+			return s;
 		} catch (Exception e) {
 			throw new RuntimeException("reading file exception");
 		}
