@@ -31,16 +31,13 @@ public class BloomFilter {
 	}
 	
 	private int validInput(String m1) {
-		try {
-			int num=Integer.parseInt(m1); 
-			if(num>0)
-				return num;
-			else
-				throw new RuntimeException("zero or negative number cannot be a size of array");
-		}
-		catch(Exception e) {
+		int num = Integer.parseInt(m1);
+		if (num > 0)
+			return num;
+		else if (num <= 0)
+			throw new RuntimeException("zero or negative number cannot be a size of array");
+		else
 			throw new RuntimeException("The input was invalid");
-		}	
 	}
 
 	// convert ASCII strings into natural numbers with Horner's Rule

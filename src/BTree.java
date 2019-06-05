@@ -51,7 +51,7 @@ public class BTree {
 				z.getChild()[k] = y.getChild()[k + order];
 		}
 		y.setCount(order - 1);
-		rearrangeChildren(x,i,y,z);
+		rearrangeChildren(x, i, y, z);
 		x.setCount(x.getCount() + 1);
 	}
 
@@ -66,9 +66,8 @@ public class BTree {
 		for (int j = 0; j < order - 1; j++)
 			y.getKey()[j + order] = null;
 	}
-	
-	public void nonFullInsertLeaf(BTreeNode x, String key)
-	{
+
+	public void nonFullInsertLeaf(BTreeNode x, String key) {
 		int i = x.getCount();
 		while (i >= 1 && key.compareTo(x.getKey()[i - 1]) < 0) {
 			x.getKey()[i] = x.getKey()[i - 1];
@@ -77,9 +76,8 @@ public class BTree {
 		x.getKey()[i] = key;
 		x.setCount(x.getCount() + 1);
 	}
-	
-	public void nonFullInsertInternal(BTreeNode x, String key)
-	{
+
+	public void nonFullInsertInternal(BTreeNode x, String key) {
 		int j = 0;
 		while (j < x.getCount() && key.compareTo(x.getKey()[j]) >= 0)
 			j++;
@@ -90,12 +88,12 @@ public class BTree {
 		}
 		nonfullInsert(x.getChild()[j], key);
 	}
-	
+
 	public void nonfullInsert(BTreeNode x, String key) {
-		if (x.getIsLeaf()) 
-			nonFullInsertLeaf(x,key);
-		else 
-			nonFullInsertInternal(x,key);
+		if (x.getIsLeaf())
+			nonFullInsertLeaf(x, key);
+		else
+			nonFullInsertInternal(x, key);
 	}
 
 	public void delete(String key) {
@@ -104,7 +102,7 @@ public class BTree {
 			return;
 		}
 		this.root.delete(key);
-		while (this.root.getChild(0)!=null&&this.root.getCount() == 0 )
+		while (this.root.getChild(0) != null && this.root.getCount() == 0)
 			this.root = this.root.getChild(0);
 	}
 
@@ -135,23 +133,22 @@ public class BTree {
 	public String toString() {
 		this.root.UpdateTreeDepth(this.root, 0);
 		String s = this.root.toString(0);
-		if(s.length()>0)
+		if (s.length() > 0)
 			return s.substring(0, s.length() - 1);
 		return s;
 
 	}
-	private int validInput(String m1) {
-		try {
-			int num=Integer.parseInt(m1); 
-			if(num>0)
-				return num;
-			else
-				throw new RuntimeException("zero or negative number cannot be a size of array");
-		}
-		catch(Exception e) {
+
+	private int validInput(String t) {
+		int num = Integer.parseInt(t);
+		if (num > 0)
+			return num;
+		else if (num <= 0)
+			throw new RuntimeException("zero or negative number cannot be a value of BTree");
+		else
 			throw new RuntimeException("The input was invalid");
-		}	
 	}
+
 	public String getSearchTime(String string) {
 		double time1 = System.nanoTime() / 1000000.0;
 		double time2 = 0;
@@ -163,7 +160,7 @@ public class BTree {
 			}
 			time2 = System.nanoTime() / 1000000.0;
 			String s = Double.toString(time2 - time1);
-			if(s.length()>5)
+			if (s.length() > 5)
 				return s.substring(0, 5);
 			return s;
 		} catch (Exception e) {
