@@ -6,7 +6,7 @@ public class BTree {
 	private BTreeNode root;
 
 	public BTree(String tVal) {
-		order = Integer.parseInt(tVal);
+		order = validInput(tVal);
 		root = new BTreeNode(order);
 	}
 
@@ -140,7 +140,18 @@ public class BTree {
 		return s;
 
 	}
-
+	private int validInput(String m1) {
+		try {
+			int num=Integer.parseInt(m1); 
+			if(num>0)
+				return num;
+			else
+				throw new RuntimeException("zero or negative number cannot be a size of array");
+		}
+		catch(Exception e) {
+			throw new RuntimeException("The input was invalid");
+		}	
+	}
 	public String getSearchTime(String string) {
 		double time1 = System.nanoTime() / 1000000.0;
 		double time2 = 0;
